@@ -1,0 +1,4 @@
+.pytest_cache/
+build/
+fantasy_ga.egg-info/
+venv/
