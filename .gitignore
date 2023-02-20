@@ -2,3 +2,4 @@
 build/
 fantasy_ga.egg-info/
 venv/
+dist/
