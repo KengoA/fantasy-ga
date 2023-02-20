@@ -1,0 +1,8 @@
+include fantasy_ga/*
+include Makefile
+include LICENSE
+include pyproject.toml
+include requirements.txt
+
+exclude examples
+exclude tests
