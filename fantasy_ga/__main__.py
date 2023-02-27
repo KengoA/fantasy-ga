@@ -27,8 +27,8 @@ def main():
         n_compound=int(args.n_compound),
     )
 
-    lineups, fit = model.compound()
-    lineups, scores = model.get_top_n_lineups(lineups, fit, int(args.top_n_lineups))
+    lineups, scores = model.fit()
+    lineups, scores = model.get_top_n_lineups(lineups, scores, int(args.top_n_lineups))
     print(f"generated top {args.top_n_lineups} lineups")
     for lineup, score in zip(lineups, scores):
         print(f"Players: {[id_to_name[id] for id in lineup]}, FPTS: {score}")

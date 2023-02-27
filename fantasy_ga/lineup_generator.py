@@ -23,22 +23,22 @@ class LineupGenerator:
         self.sal_cap = sal_cap
 
     @staticmethod
-    def get_top_n_lineups(lineups, fit, n):
-        top_n_scores = (-fit).argsort()[:n]
-        return lineups.take(top_n_scores.astype(int), 0), fit.take(
+    def get_top_n_lineups(lineups, scores, n):
+        top_n_scores = (-scores).argsort()[:n]
+        return lineups.take(top_n_scores.astype(int), 0), scores.take(
             top_n_scores.astype(int), 0
         )
 
-    def calc_fit(self, lineups: np.array):
-        fit = []
+    def calc_scores(self, lineups: np.array):
+        scores = []
         for lineup in lineups:
             sal, fpts = self.m[np.in1d(self.m[:, 0], lineup.astype(int))][
                 :, [1, 2]
             ].sum(axis=0)
-            fit.append(fpts) if sal <= self.sal_cap and len(
+            scores.append(fpts) if sal <= self.sal_cap and len(
                 np.unique(lineup)
-            ) == 8 else fit.append(-1)
-        return np.array(fit)
+            ) == 8 else scores.append(-1)
+        return np.array(scores)
 
     def create_random_lineups(self):
         lineups = []
@@ -56,9 +56,9 @@ class LineupGenerator:
             lineups.append(lineup)
         return np.array(lineups)
 
-    def breed(self, lineups, fit):
+    def breed(self, lineups, scores):
         new_lineups = []
-        parents_idx = (-fit).argsort()[:2]
+        parents_idx = (-scores).argsort()[:2]
         parents = lineups.take(parents_idx, 0)
 
         for _ in range(self.n_breed):
@@ -86,18 +86,18 @@ class LineupGenerator:
             lineups[-1, swap_pos] = mutant[0]
         return lineups
 
-    def evolve(self, lineups, fit):
+    def evolve(self, lineups, scores):
         for _ in range(self.n_gen):
-            lineups = self.breed(lineups, fit)
+            lineups = self.breed(lineups, scores)
             lineups = self.mutate(lineups)
-            fit = self.calc_fit(lineups)
-        return lineups, fit
+            scores = self.calc_scores(lineups)
+        return lineups, scores
 
-    def compound(self):
+    def fit(self):
         lineups = self.create_random_lineups()
-        fit = self.calc_fit(lineups)
+        scores = self.calc_scores(lineups)
         for _ in range(self.n_compound):
-            lineups, fit = self.evolve(lineups, fit)
+            lineups, scores = self.evolve(lineups, scores)
             lineups = np.vstack([lineups, self.create_random_lineups()])
-            fit = self.calc_fit(lineups)
-        return lineups, fit
+            scores = self.calc_scores(lineups)
+        return lineups, scores
