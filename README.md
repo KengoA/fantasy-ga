@@ -41,11 +41,11 @@ optimal_lineups, top_n_scores = model.get_top_n_lineups(lineups, scores, 1)
 
 As a module
 ```
-$ python -m fantasy_ga --filepath=examples/DraftKings/DKSalarie.csv --site=DraftKings --n_pop=100 --n_gen=5 --n_breed=100 --n_mutate=100 --n_compound=10 --top_n_lineups=1
+$ python -m fantasy_ga --filepath=examples/DraftKings/DKSalaries.csv --site=DraftKings --n_pop=100 --n_gen=5 --n_breed=100 --n_mutate=100 --n_compound=10 --top_n_lineups=1
 > PlayerIDs: [ 17. 106.  70.   0.  63.  33.   1. 108.], FPTS: 308.62082
 ```
 or a command
 ```
-$ fantasy-ga --filepath=examples/DraftKings/DKSalarie.csv --site=DraftKings --n_pop=100 --n_gen=5 --n_breed=100 --n_mutate=100 --n_compound=10 --top_n_lineups=1
+$ fantasy-ga --filepath=examples/DraftKings/DKSalaries.csv --site=DraftKings --n_pop=100 --n_gen=5 --n_breed=100 --n_mutate=100 --n_compound=10 --top_n_lineups=1
 > PlayerIDs: [ 17. 106.  70.   0.  63.  33.   1. 108.], FPTS: 308.62082
 ```
