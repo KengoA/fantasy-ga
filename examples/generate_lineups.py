@@ -5,7 +5,9 @@ from fantasy_ga import LineupGenerator, read_csv
 
 if __name__ == "__main__":
     # load data from DraftKings salary csv
-    id_to_name, players = read_csv("examples/DraftKings/DKSalaries.csv", site="DraftKings")
+    id_to_name, players = read_csv(
+        "examples/DraftKings/DKSalaries.csv", site="DraftKings"
+    )
     m = np.array(players)
     n_pop = 1000
     n_breed = 30

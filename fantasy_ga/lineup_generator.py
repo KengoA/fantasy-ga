@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class LineupGenerator:
     def __init__(
         self,
@@ -31,7 +32,9 @@ class LineupGenerator:
     def calc_fit(self, lineups: np.array):
         fit = []
         for lineup in lineups:
-            sal, fpts = self.m[np.in1d(self.m[:,0], lineup.astype(int))][:, [1, 2]].sum(axis=0)
+            sal, fpts = self.m[np.in1d(self.m[:, 0], lineup.astype(int))][
+                :, [1, 2]
+            ].sum(axis=0)
             fit.append(fpts) if sal <= self.sal_cap and len(
                 np.unique(lineup)
             ) == 8 else fit.append(-1)
@@ -71,7 +74,9 @@ class LineupGenerator:
 
         for idx in mutate_idx:
             mutant = self.m[np.random.choice(self.m.shape[0]), :]
-            original = self.m[self.m[:,0]==np.random.choice(lineups[idx]).astype(int), :][0]
+            original = self.m[
+                self.m[:, 0] == np.random.choice(lineups[idx]).astype(int), :
+            ][0]
             eligible_pos = np.where(
                 mutant[self.pos_start_idx :].astype(bool)
                 & original[self.pos_start_idx :].astype(bool)
