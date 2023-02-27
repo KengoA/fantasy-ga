@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-
 import numpy as np
-
 
 class LineupGenerator:
     def __init__(
@@ -34,7 +31,7 @@ class LineupGenerator:
     def calc_fit(self, lineups: np.array):
         fit = []
         for lineup in lineups:
-            sal, fpts = self.m.take(lineup.astype(int), 0)[:, [1, 2]].sum(axis=0)
+            sal, fpts = self.m[np.in1d(self.m[:,0], lineup.astype(int))][:, [1, 2]].sum(axis=0)
             fit.append(fpts) if sal <= self.sal_cap and len(
                 np.unique(lineup)
             ) == 8 else fit.append(-1)
@@ -74,8 +71,7 @@ class LineupGenerator:
 
         for idx in mutate_idx:
             mutant = self.m[np.random.choice(self.m.shape[0]), :]
-            original = self.m[lineups[idx][np.random.choice(8)].astype(int), :]
-
+            original = self.m[self.m[:,0]==np.random.choice(lineups[idx]).astype(int), :][0]
             eligible_pos = np.where(
                 mutant[self.pos_start_idx :].astype(bool)
                 & original[self.pos_start_idx :].astype(bool)
@@ -90,12 +86,10 @@ class LineupGenerator:
             lineups = self.breed(lineups, fit)
             lineups = self.mutate(lineups)
             fit = self.calc_fit(lineups)
-            # print(f"gen {i}: {lineups.shape[0]} lineups generated")
         return lineups, fit
 
     def compound(self):
         lineups = self.create_random_lineups()
-        # print(f"init: {lineups.shape[0]} lineups generated")
         fit = self.calc_fit(lineups)
         for _ in range(self.n_compound):
             lineups, fit = self.evolve(lineups, fit)
