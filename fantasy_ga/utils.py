@@ -1,4 +1,5 @@
 import csv
+import numpy as np
 from fantasy_ga.constants import DK_POSITIONS
 
 
@@ -27,4 +28,4 @@ def read_csv(filepath: str, site: str) -> tuple[dict, list]:
                 )
         elif site == "FanDuel":
             raise NotImplementedError
-    return id_to_name, players
+    return id_to_name, np.array(players)
