@@ -19,13 +19,15 @@ def read_csv(filepath: str, site: str) -> tuple[dict, list]:
         _ = next(reader)
         players = []
         id_to_name = {}
+        id_to_salary = {}
         if site == "DraftKings":
             for row in reader:
                 id_to_name[int(row[3])] = row[2]
+                id_to_salary[int(row[3])] = int(row[5])
                 players.append(
                     [int(row[3]), int((row[5])), float(row[8])]
                     + encode_position(row[4])
                 )
         elif site == "FanDuel":
             raise NotImplementedError
-    return id_to_name, np.array(players)
+    return id_to_name, id_to_salary, np.array(players)
