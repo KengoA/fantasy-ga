@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fantasy-ga"
-version = "0.1.0"
+version = "0.2.0"
 description = "Genetic algorithm library to generate fantasy basketball lineups"
 readme = "README.md"
 authors = [{ name = "Kengo Arao", email = "kengo@hey.com" }]
