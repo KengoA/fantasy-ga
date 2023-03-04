@@ -18,8 +18,12 @@ Alternatively, you can provide a `numpy.array` where the columns correspond to p
 import numpy as np
 from fantasy_ga import LineupGenerator, read_csv
 
+model = LineupGenerator(m, n_pop, n_gen, n_breed, n_mutate, n_compound)
+lineups, scores = model.fit()
+optimal_lineups, top_n_scores = model.get_top_n_lineups(1)
+
 # load data from DraftKings salary csv
-id_to_name, m = read_csv("examples/DraftKings/DKSalaries.csv", site="DraftKings")
+id_to_name, id_to_salary, m = read_csv("examples/DraftKings/DKSalaries.csv", site="DraftKings")
 
 # initial population of random lineups
 n_pop = 1000
@@ -33,19 +37,29 @@ n_mutate = 30
 n_compound = 5
 
 model = LineupGenerator(m, n_pop, n_gen, n_breed, n_mutate, n_compound)
-lineups, scores = model.fit()
-optimal_lineups, top_n_scores = model.get_top_n_lineups(lineups, scores, 1)
+model.fit()
+optimal_lineups, top_n_scores = model.get_top_n_lineups(1)
+
+print(
+    f"Players: {[id_to_name[id] for id in optimal_lineups[0]]}\nSalary Total: {sum([id_to_salary[id] for id in optimal_lineups[0]])}\nExpected FPTS: {top_n_scores[0]}"
+)
 ```
 
 ### CLI
 
-As a module
+As a Python module
 ```
 $ python -m fantasy_ga --filepath=examples/DraftKings/DKSalaries.csv --site=DraftKings --n_pop=100 --n_gen=5 --n_breed=100 --n_mutate=100 --n_compound=10 --top_n_lineups=1
-> PlayerIDs: [ 17. 106.  70.   0.  63.  33.   1. 108.], FPTS: 308.62082
 ```
-or a command
+or a CLI command
 ```
-$ fantasy-ga --filepath=examples/DraftKings/DKSalaries.csv --site=DraftKings --n_pop=100 --n_gen=5 --n_breed=100 --n_mutate=100 --n_compound=10 --top_n_lineups=1
-> PlayerIDs: [ 17. 106.  70.   0.  63.  33.   1. 108.], FPTS: 308.62082
+$ fantasy-ga --filepath=examples/DraftKings/DKSalaries.csv --site=DraftKings --n_pop=100 --n_gen=5 --n_breed=100 --n_mutate=100 --n_compound=10 --top_n_lineups=1  
+```
+which generates
+```
+Generated Top 1 lineups
+
+Players: ['Russell Westbrook', 'Bruce Brown', 'Michael Porter Jr.', 'Jerami Grant', 'Mason Plumlee', 'Paul George', 'Aaron Gordon', 'Marcus Morris Sr.']
+Salary Total: 49100
+Expected FPTS: 254.11
 ```
