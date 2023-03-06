@@ -18,10 +18,6 @@ Alternatively, you can provide a `numpy.array` where the columns correspond to p
 import numpy as np
 from fantasy_ga import LineupGenerator, read_csv
 
-model = LineupGenerator(m, n_pop, n_gen, n_breed, n_mutate, n_compound)
-lineups, scores = model.fit()
-optimal_lineups, top_n_scores = model.get_top_n_lineups(1)
-
 # load data from DraftKings salary csv
 id_to_name, id_to_salary, m = read_csv("examples/DraftKings/DKSalaries.csv", site="DraftKings")
 
