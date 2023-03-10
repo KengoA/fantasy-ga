@@ -1,20 +1,26 @@
-from fantasy_ga import LineupGenerator, read_csv
+from fantasy_ga import LineupGenerator
+from fantasy_ga.configs import Site, League, ModelConfig, ContestConfig
 
 if __name__ == "__main__":
-    # load data from DraftKings salary csv
-    id_to_name, id_to_salary, m = read_csv(
-        "examples/DraftKings/DKSalaries.csv", site="DraftKings"
+    data_path = "examples/DraftKings/NBA/DKSalaries.csv"
+    export_path = "examples/DraftKings/NBA/lineups.csv"
+
+    cc = ContestConfig(Site.DK, League.NBA)
+    mc = ModelConfig(
+        n_pop=1000,
+        n_breed=30,
+        n_mutate=30,
+        n_gen=16,
+        n_compound=5,
     )
-    n_pop = 1000
-    n_breed = 30
-    n_mutate = 30
-    n_gen = 16
-    n_compound = 5
 
-    model = LineupGenerator(m, n_pop, n_gen, n_breed, n_mutate, n_compound)
+    model = LineupGenerator(cc, mc)
+    model.read_csv(data_path)
     model.fit()
-    optimal_lineups, top_n_scores = model.get_top_n_lineups(1)
+    model.export_csv(export_path, top_n=3)
+    print(f"Top 3 linesups exported into {export_path}")
 
+    lineups, scores = model.get_top_n_lineups(1)
     print(
-        f"Players: {[id_to_name[id] for id in optimal_lineups[0]]}\nSalary Total: {sum([id_to_salary[id] for id in optimal_lineups[0]])}\nExpected FPTS: {top_n_scores[0]}"
+        f"[Best Lineup]\nPlayers: {[model.id_to_name[id] for id in lineups[0]]}\nSalary Total: {sum([model.id_to_salary[id] for id in lineups[0]])}\nExpected FPTS: {scores[0]}"
     )

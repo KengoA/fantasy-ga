@@ -1,43 +1,60 @@
 # fantasy-ga
-**fantasy-ga** is a Python module and a command line tool that uses genetic algorithm to automate the generation of fantasy sports linesups. Currently supports DraftKings basketball rules.
+**fantasy-ga** is a Python module and a command line tool that uses genetic algorithm to automate the generation of fantasy sports linesups. Currently supported platforms and leagues are as follows. 
+
+
+|   | NBA | NFL  | MLB  | NHL  |
+|---|---|---|---|---|
+| DraftKings  | :white_check_mark:  | Soon | Soon  |   |
+| FanDuel |   |   |   |   |
+
 ## Installation
- - Dependency
-    - `numpy`
+Dependencies: `numpy`
 ```bash
 pip install fantasy-ga
 ```
 
 ## Usage
 
-Export a csv file from your daily fantasy basketball platform for a given contest, and read the file with `fantasy_ga.read_csv`. Currently DraftKings is supported.
+Export a csv file from a daily fantasy sports platform of your choice for a given contest.
 
-Alternatively, you can provide a `numpy.array` where the columns correspond to player ID, salary, fantasy points (FPTS) and position information i.e. `id,salary,fpts,PG,SG,SF,PF,C,G,F,UTIL`.
+Alternatively, you can provide a `numpy.array` where the first 3 columns correspond to player ID, salary, fantasy points (FPTS), followed by position information e.g. `id,salary,fpts,PG,SG,SF,PF,C,G,F,UTIL` for basketball.
 
 ### Python
 ```python
-import numpy as np
-from fantasy_ga import LineupGenerator, read_csv
+from fantasy_ga import LineupGenerator
+from fantasy_ga.configs import Site, League, ModelConfig, ContestConfig
 
-# load data from DraftKings salary csv
-id_to_name, id_to_salary, m = read_csv("examples/DraftKings/DKSalaries.csv", site="DraftKings")
+data_path = "examples/DraftKings/NBA/DKSalaries.csv"
+export_path = "export.csv"
 
-# initial population of random lineups
-n_pop = 1000
-# number of evolutions to itererate breeding and mutation for
-n_gen = 16
-# number of children lineups to choose from two best lineups
-n_breed = 30
-# number of random mutations for each evolution
-n_mutate = 30
-# number of compound evolutions with additional random lineups
-n_compound = 5
+cc = ContestConfig(Site.DK, League.NBA)
+mc = ModelConfig(
+    # initial population of random lineups
+    n_pop = 1000
+    # number of evolutions to itererate breeding and mutation for
+    n_gen = 16
+    # number of children lineups to choose from two best lineups
+    n_breed = 30
+    # number of random mutations for each evolution
+    n_mutate = 30
+    # number of compound evolutions with additional random lineups
+    n_compound = 5
+)
 
-model = LineupGenerator(m, n_pop, n_gen, n_breed, n_mutate, n_compound)
+model = LineupGenerator(cc, mc)
+model.read_csv(data_path)
 model.fit()
-optimal_lineups, top_n_scores = model.get_top_n_lineups(1)
+# If top_n is not specified, it will save max(500, number of total lineups) lineups sorted by scores
+model.export_csv(export_path, top_n=3)
 
+lineups, scores = model.get_top_n_lineups(1)
 print(
-    f"Players: {[id_to_name[id] for id in optimal_lineups[0]]}\nSalary Total: {sum([id_to_salary[id] for id in optimal_lineups[0]])}\nExpected FPTS: {top_n_scores[0]}"
+    f"""
+    [Best Lineup]
+    Players: {[model.id_to_name[id] for id in lineups[0]]} 
+    Salary Total: {sum([model.id_to_salary[id] for id in lineups[0]])}
+    Expected FPTS: {scores[0]}
+    """
 )
 ```
 
@@ -45,17 +62,18 @@ print(
 
 As a Python module
 ```
-$ python -m fantasy_ga --filepath=examples/DraftKings/DKSalaries.csv --site=DraftKings --n_pop=100 --n_gen=5 --n_breed=100 --n_mutate=100 --n_compound=10 --top_n_lineups=1
+$ python -m fantasy_ga --data_path=examples/DraftKings/NBA/DKSalaries.csv --export_path=examples/DraftKings/NBA/lineups.csv --site=DraftKings --league=NBA --n_pop=100 --n_gen=5 --n_breed=100 --n_mutate=100 --n_compound=10 --top_n_lineups=3
 ```
 or a CLI command
 ```
-$ fantasy-ga --filepath=examples/DraftKings/DKSalaries.csv --site=DraftKings --n_pop=100 --n_gen=5 --n_breed=100 --n_mutate=100 --n_compound=10 --top_n_lineups=1  
+$ fantasy-ga --data_path=examples/DraftKings/NBA/DKSalaries.csv --export_path=examples/DraftKings/NBA/lineups.csv --site=DraftKings --league=NBA --n_pop=100 --n_gen=5 --n_breed=100 --n_mutate=100 --n_compound=10 --top_n_lineups=3
 ```
 which generates
 ```
-Generated Top 1 lineups
+Saved top 3 lineups into "examples/DraftKings/NBA/lineups.csv".
 
-Players: ['Russell Westbrook', 'Bruce Brown', 'Michael Porter Jr.', 'Jerami Grant', 'Mason Plumlee', 'Paul George', 'Aaron Gordon', 'Marcus Morris Sr.']
-Salary Total: 49100
-Expected FPTS: 254.11
+[Best Lineup]
+Players: ['Reggie Jackson', 'Max Strus', 'Anthony Edwards', "Royce O'Neale", 'Nikola Jokic', 'Dejounte Murray', 'John Collins', 'Jarrett Allen']
+Salary Total: 50000
+Expected FPTS: 268.13
 ```
