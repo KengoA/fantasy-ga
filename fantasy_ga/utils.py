@@ -13,7 +13,7 @@ def encode_position(s: str) -> list[int]:
     return res
 
 
-def read_csv(filepath: str, site: str) -> tuple[dict, list]:
+def read_csv(filepath: str, site: str = "DraftKings") -> tuple[dict, list]:
     with open(filepath, mode="r") as f:
         reader = csv.reader(f)
         _ = next(reader)
@@ -31,3 +31,13 @@ def read_csv(filepath: str, site: str) -> tuple[dict, list]:
         elif site == "FanDuel":
             raise NotImplementedError
     return id_to_name, id_to_salary, np.array(players)
+
+
+def export_csv(filepath: str, lineups, site: str = "DraftKings", league="NBA"):
+    with open(filepath, "w") as f:
+        w = csv.writer(f)
+        if site == "DraftKings":
+            if league == "NBA":
+                w.writerow(DK_POSITIONS)
+                for lineup in lineups:
+                    w.writerow(lineup.astype(int))
