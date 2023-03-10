@@ -47,5 +47,6 @@ def main():
         f"[Best Lineup]\nPlayers: {[model.id_to_name[id] for id in lineups[0]]}\nSalary Total: {sum([model.id_to_salary[id] for id in lineups[0]])}\nExpected FPTS: {scores[0]}"
     )
 
+
 if __name__ == "__main__":
     main()

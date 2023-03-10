@@ -25,7 +25,7 @@ from fantasy_ga import LineupGenerator
 from fantasy_ga.configs import Site, League, ModelConfig, ContestConfig
 
 data_path = "examples/DraftKings/NBA/DKSalaries.csv"
-export_path = "export.csv"
+export_path = "examples/DraftKings/NBA/export.csv"
 
 cc = ContestConfig(Site.DK, League.NBA)
 mc = ModelConfig(
