@@ -3,7 +3,6 @@ import numpy as np
 
 from fantasy_ga.configs import (
     Site,
-    League,
     ContestConfig,
     ModelConfig,
     POSITIONS,
@@ -17,7 +16,7 @@ class LineupGenerator:
         cc: ContestConfig,
         mc: ModelConfig,
     ):
-        self._m = None
+        self.m = None
         self._cc = cc
         self._mc = mc
         self._positions = POSITIONS[self._cc.site][self._cc.league]
@@ -34,7 +33,9 @@ class LineupGenerator:
             for i in range(len(self._positions)):
                 if pos == self._positions[i]:
                     res[i] = 1
-                    break
+                    # break if no duplicate positions allowed in the lineup
+                    if len(self._positions) == len(set(self._positions)):
+                        break
         return res
 
     def read_csv(self, filepath: str):
@@ -43,17 +44,19 @@ class LineupGenerator:
             _ = next(reader)
             players = []
             if self._cc.site == Site.DK:
-                if self._cc.league == League.NBA:
-                    for row in reader:
-                        self.id_to_name[int(row[3])] = row[2]
-                        self.id_to_salary[int(row[3])] = int(row[5])
-                        players.append(
-                            [int(row[3]), int((row[5])), float(row[-1])]
-                            + self.encode_position(row[4])
-                        )
+                for row in reader:
+                    self.id_to_name[int(row[3])] = row[2]
+                    self.id_to_salary[int(row[3])] = int(row[5])
+                    players.append(
+                        [int(row[3]), int((row[5])), float(row[-1])]
+                        + self.encode_position(row[4])
+                    )
             elif self._cc.site == Site.FD:
                 raise NotImplementedError
-        self._m = np.array(players)
+        self.m = np.array(players)
+
+    def set_matrix(self, m: np.array):
+        self.m = m
 
     def export_csv(self, filepath: str, top_n=None):
         n = top_n if top_n else min(500, len(self.lineups))
@@ -74,12 +77,12 @@ class LineupGenerator:
     def calc_scores(self):
         scores = []
         for lineup in self.lineups:
-            sal, fpts = self._m[np.in1d(self._m[:, 0], lineup.astype(int))][
+            sal, fpts = self.m[np.in1d(self.m[:, 0], lineup.astype(int))][
                 :, [1, 2]
             ].sum(axis=0)
             scores.append(fpts) if sal <= self._salary_cap and len(
                 np.unique(lineup)
-            ) == 8 else scores.append(-1)
+            ) == len(self._positions) else scores.append(-1)
         self.scores = np.array(scores)
 
     def create_random_lineups(self):
@@ -87,8 +90,8 @@ class LineupGenerator:
 
         for _ in range(self._mc.n_pop):
             lineup = []
-            for pos_key in range(self.pos_start_idx, self._m.shape[1]):
-                candidate_ids = self._m[self._m[:, pos_key] == 1][:, 0]
+            for pos_key in range(self.pos_start_idx, self.m.shape[1]):
+                candidate_ids = self.m[self.m[:, pos_key] == 1][:, 0]
                 searching = True
                 while searching:
                     candidate = np.random.choice(candidate_ids)
@@ -108,7 +111,7 @@ class LineupGenerator:
                 self.lineups = parents
                 return
             else:
-                breed_idx = np.random.choice(2, 8)
+                breed_idx = np.random.choice(2, len(self._positions))
                 new_lineups.append([parents[p, idx] for idx, p in enumerate(breed_idx)])
         self.lineups = np.vstack([parents, np.array(new_lineups)])
 
@@ -116,14 +119,19 @@ class LineupGenerator:
         mutate_idx = np.random.choice(self.lineups.shape[0], self._mc.n_mutate)
 
         for idx in mutate_idx:
-            mutant = self._m[np.random.choice(self._m.shape[0]), :]
-            original = self._m[
-                self._m[:, 0] == np.random.choice(self.lineups[idx]).astype(int), :
-            ][0]
-            eligible_pos = np.where(
-                mutant[self.pos_start_idx :].astype(bool)
-                & original[self.pos_start_idx :].astype(bool)
-            )[0]
+            searching = True
+            while searching:
+                # Search for two rows where positions are swappable
+                mutant = self.m[np.random.choice(self.m.shape[0]), :]
+                original = self.m[
+                    self.m[:, 0] == np.random.choice(self.lineups[idx]).astype(int), :
+                ][0]
+                eligible_pos = np.where(
+                    mutant[self.pos_start_idx :].astype(bool)
+                    & original[self.pos_start_idx :].astype(bool)
+                )[0]
+                if len(eligible_pos) > 0:
+                    searching = False
             swap_pos = np.random.choice(eligible_pos)
             self.lineups = np.vstack([self.lineups, self.lineups[idx]])
             self.lineups[-1, swap_pos] = mutant[0]

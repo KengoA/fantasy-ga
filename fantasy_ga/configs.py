@@ -7,6 +7,7 @@ class League(Enum):
     NBA = 1
     NFL = 2
     MLB = 3
+    NHL = 4
 
 
 class Site(Enum):
@@ -20,6 +21,7 @@ POSITIONS = {
         League.NBA: ["PG", "SG", "SF", "PF", "C", "G", "F", "UTIL"],
         League.MLB: ["P", "P", "C", "1B", "2B", "3B", "SS", "OF", "OF", "OF"],
         League.NFL: ["QB", "RB", "RB", "WR", "WR", "WR", "TE", "FLEX", "DST"],
+        League.NHL: ["C", "C", "W", "W", "W", "D", "D", "G", "UTIL"],
     }
 }
 
@@ -28,6 +30,7 @@ SALARY_CAPS = {
         League.NBA: 50000,
         League.MLB: 50000,
         League.NFL: 50000,
+        League.NHL: 50000,
     }
 }
 

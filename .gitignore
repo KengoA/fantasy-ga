@@ -3,3 +3,4 @@ build/
 fantasy_ga.egg-info/
 venv/
 dist/
+*.DS_Store

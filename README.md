@@ -1,10 +1,10 @@
 # fantasy-ga
-**fantasy-ga** is a Python module and a command line tool that uses genetic algorithm to automate the generation of fantasy sports linesups. Currently supported platforms and leagues are as follows. 
+**fantasy-ga** is a Python module and a command line tool that uses the genetic algorithm to automate the generation of fantasy sports linesups. Currently supported platforms and leagues are as follows. 
 
 
 |   | NBA | NFL  | MLB  | NHL  |
 |---|---|---|---|---|
-| DraftKings  | :white_check_mark:  | Soon | Soon  |   |
+| DraftKings  | :white_check_mark:  | :white_check_mark: | :white_check_mark:  | :white_check_mark:  |
 | FanDuel |   |   |   |   |
 
 ## Installation
@@ -15,11 +15,9 @@ pip install fantasy-ga
 
 ## Usage
 
-Export a csv file from a daily fantasy sports platform of your choice for a given contest.
-
-Alternatively, you can provide a `numpy.array` where the first 3 columns correspond to player ID, salary, fantasy points (FPTS), followed by position information e.g. `id,salary,fpts,PG,SG,SF,PF,C,G,F,UTIL` for basketball.
-
 ### Python
+`LineupGenerator` class supports csv files exported from daily fantasy sports platforms for a given contest.
+
 ```python
 from fantasy_ga import LineupGenerator
 from fantasy_ga.configs import Site, League, ModelConfig, ContestConfig
@@ -57,6 +55,17 @@ print(
     """
 )
 ```
+### Using custom numpy array for player data
+Alternatively, you can provide a `numpy.array` where the first 3 columns correspond to player ID, salary, fantasy points (FPTS), followed by position information. For instance, the columns correspond to `id,salary,fpts,PG,SG,SF,PF,C,G,F,UTIL` for DraftKings Fantasy Basketball. 
+
+If you would like to use custom numpy array for data matrix instead of csv files, you can do so by using the `set_matrix()` method as follows.
+
+```Python
+m = np.loadtxt("tests/test_data.csv", delimiter=",", skiprows=1)
+model = LineupGenerator(cc, mc)
+model.set_matrix()
+```
+
 
 ### CLI
 
