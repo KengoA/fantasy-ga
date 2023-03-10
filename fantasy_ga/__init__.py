@@ -1,5 +1,4 @@
 from fantasy_ga.lineup_generator import LineupGenerator
-from fantasy_ga.utils import read_csv
-from fantasy_ga.constants import *
+from fantasy_ga.configs import League, Site, ModelConfig, ContestConfig
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"

@@ -6,8 +6,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fantasy-ga"
-version = "0.2.1"
-description = "Genetic algorithm library to generate fantasy basketball lineups"
+version = "0.3.0"
+description = "Genetic algorithm library to generate fantasy sports lineups"
 readme = "README.md"
 authors = [{ name = "Kengo Arao", email = "kengo@hey.com" }]
 license = { file = "LICENSE" }
@@ -15,7 +15,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["genetic-algorithm","fantasy-basketball"]
+keywords = ["genetic-algorithm","fantasy-sports", "fantasy-basketball"]
 dependencies = [
         "numpy==1.24.2"
 ]
