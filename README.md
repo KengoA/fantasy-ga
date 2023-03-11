@@ -4,7 +4,7 @@
 
 |   | NBA | NFL  | MLB  | NHL  |
 |---|---|---|---|---|
-| DraftKings  | :white_check_mark:  | :white_check_mark: | :white_check_mark:  | :white_check_mark:  |
+| DraftKings  |  ✅  | ✅  |  ✅  |  ✅  |
 | FanDuel |   |   |   |   |
 
 ## Installation
@@ -55,17 +55,36 @@ print(
     """
 )
 ```
-### Using custom numpy array for player data
+### Using custom `numpy.array` for player data
 Alternatively, you can provide a `numpy.array` where the first 3 columns correspond to player ID, salary, fantasy points (FPTS), followed by position information. For instance, the columns correspond to `id,salary,fpts,PG,SG,SF,PF,C,G,F,UTIL` for DraftKings Fantasy Basketball. 
 
-If you would like to use custom numpy array for data matrix instead of csv files, you can do so by using the `set_matrix()` method as follows.
+If you would like to use custom numpy array for data matrix instead of csv files, you can do so by using the `set_matrix()` method. For example
 
 ```Python
-m = np.loadtxt("tests/test_data.csv", delimiter=",", skiprows=1)
+cc = ContestConfig(Site.DK, League.NBA)
+mc = ModelConfig() # use default
+m = np.array(
+    [
+        [0, 6600, 36.46503, 0, 0, 0, 1, 1, 0, 1, 1],
+        [1, 4200, 26.760368, 0, 0, 1, 1, 0, 0, 1, 1],
+        [2, 3000, 4.38538, 1, 1, 0, 0, 0, 1, 0, 1],
+        [3, 5000, 27.175564, 0, 0, 0, 0, 1, 0, 0, 1],
+        [4, 3400, 16.734577, 0, 1, 1, 0, 0, 1, 1, 1],
+        [5, 5900, 3.4382372, 0, 1, 1, 0, 0, 1, 1, 1],
+        [6, 3000, -0.18490964, 1, 1, 0, 0, 0, 1, 0, 1],
+        [7, 3000, 11.075589, 0, 0, 1, 1, 0, 0, 1, 1],
+        [8, 3000, 6.469783, 0, 0, 0, 0, 1, 0, 0, 1],
+        [9, 3000, 8.459954, 0, 0, 0, 0, 1, 0, 0, 1],
+        [10, 5700, 33.98281, 0, 0, 0, 1, 1, 0, 1, 1],
+    ]
+)
 model = LineupGenerator(cc, mc)
-model.set_matrix()
+model.set_matrix(m)
+model.fit()
 ```
 
+### Running individual steps of the Genetic Algorithm
+`LineupGenerator` class has two core methods which return optimised lineups. `breed()` method chooses the best two lineups according to the sum of fantasy points with valid positions and swap players randomly (creating _children_ lineups). `mutate()` method randomly swaps players where applicable. `fit()` method wraps around those methods such that those operations are done for multiple generations with additional random lineups.
 
 ### CLI
 
