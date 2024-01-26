@@ -34,8 +34,8 @@ class LineupGenerator:
         self.id_to_name: dict = {}
         self.id_to_salary: dict = {}
         self.m: np.ndarray = None
-        self.lineups: np.ndarray = None
-        self.scores = np.ndarray = None
+        self.lineups: np.ndarray = []
+        self.scores: np.ndarray = []
         self.pos_start_idx: int = 3
 
     def encode_position(self, s: str) -> list[int]:
@@ -124,8 +124,9 @@ class LineupGenerator:
             np.ndarray: An array of lineups sorted by highest to lowest FPTS scores
         """
         top_n_scores = (-self.scores).argsort()[:n]
-        return self.lineups.take(top_n_scores.astype(int), 0), self.scores.take(
-            top_n_scores.astype(int), 0
+        return (
+            self.lineups.take(top_n_scores.astype(int), 0),
+            self.scores.take(top_n_scores.astype(int), 0)
         )
 
     def calc_scores(self):
