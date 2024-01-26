@@ -1,10 +1,14 @@
 # fantasy-ga
-**fantasy-ga** is a Python module and a command line tool that uses the genetic algorithm to automate the generation of fantasy sports linesups. Currently supported platforms and leagues are as follows. 
+
+[![Downloads](https://static.pepy.tech/badge/fantasy-ga)](https://pepy.tech/project/fantasy-ga) [![Downloads](https://static.pepy.tech/badge/fantasy-ga/month)](https://pepy.tech/project/fantasy-ga)
+
+**fantasy-ga** is a Python module and a command line tool that uses the genetic algorithm to automate the generation of fantasy sports lineups. Currently supported platforms and leagues are as follows. 
 
 
 |   | NBA | NFL  | MLB  | NHL  |
 |---|---|---|---|---|
 | DraftKings  |  ✅  | ✅  |  ✅  |  ✅  |
+
 
 ## Installation
 Dependencies: `numpy`
