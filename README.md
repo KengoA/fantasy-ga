@@ -7,7 +7,8 @@
 
 |   | NBA | NFL  | MLB  | NHL  |
 |---|---|---|---|---|
-| DraftKings  | ✔️ | ✔️ | ✔️ | ✔️ |
+| DraftKings  |  ✅  | ✅  |  ✅  |  ✅  |
+
 
 ## Installation
 Dependencies: `numpy`

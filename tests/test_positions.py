@@ -4,7 +4,7 @@ from fantasy_ga.configs import ModelConfig, ContestConfig, Site, League
 
 
 def test_positions_random_lineups():
-    cc = ContestConfig(Site.DK, League.NBA)
+    cc = ContestConfig(site=Site.DK, league=League.NBA)
     mc = ModelConfig()
 
     model = LineupGenerator(cc, mc)
