@@ -5,7 +5,6 @@
 |   | NBA | NFL  | MLB  | NHL  |
 |---|---|---|---|---|
 | DraftKings  |  ✅  | ✅  |  ✅  |  ✅  |
-| FanDuel |   |   |   |   |
 
 ## Installation
 Dependencies: `numpy`
