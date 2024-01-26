@@ -96,7 +96,7 @@ class LineupGenerator:
         """
         self.m = m
 
-    def export_csv(self, filepath: str, top_n: int=None):
+    def export_csv(self, filepath: str, top_n: int = None):
         """
         Export the lineups in a CSV format submittable in the contest.
 
